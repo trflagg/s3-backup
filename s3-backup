@@ -1,0 +1,37 @@
+#!/bin/bash
+
+function usage {
+cat << EOF
+usage: $0 -s source -b bucket -r remote_path
+     : $0 -h
+
+OPTIONS:
+	-s The path to the source directory to backup
+	-b The S3 bucket to backup to
+	-r The remote path within the S3 bucket to backup to
+EOF
+}
+
+while getopts "s:" OPTION
+do
+	case $OPTION in
+		s)
+			SOURCE_PATH=$OPTARG
+			;;
+		h)
+			usage
+			exit 0
+			;;
+	esac
+done
+
+if [[ -z $SOURCE_PATH ]]
+then
+	usage
+	exit 1
+fi
+
+TAR_FILE=$(mktemp)
+
+echo "Compressing $SOURCE_PATH"
+tar -czf $TAR_FILE $SOURCE_PATH

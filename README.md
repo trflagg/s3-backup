@@ -13,13 +13,13 @@ docker run --rm --volumes-from my-data-only-container digit/s3-backup -s /path/i
 
 Where the options are:
 
-- s The path to the source directory to backup
-- b The S3 bucket to backup to
-- r The remote path within the S3 bucket to backup to
+- -s The path to the source directory to backup
+- -b The S3 bucket to backup to
+- -r The remote path within the S3 bucket to backup to
 
 ## Example usage
 
-Suppose you have a data container:
+Suppose you have a data container created by running something like this:
 
 ```
 docker run -v /var/volume1 -name foo-data busybox true
@@ -31,7 +31,7 @@ Then normally you would start the container which runs your program/service and 
 docker run -d --volumes-from foo-data -name foo my-registry/foo
 ```
 
-You do this because then you can kill the foo container and have the data in /var/volume1 persisted in the data only container.
+You do this because then you can kill the foo container and have the data in /var/volume1 persisted in the data only foo-data container.
 
 Now when you want to backup the data in your data only container you can use this container to do so.
 

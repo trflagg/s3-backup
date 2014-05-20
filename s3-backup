@@ -3,35 +3,46 @@
 function usage {
 cat << EOF
 usage: $0 -s source -b bucket -r remote_path
-     : $0 -h
+: $0 -h
 
 OPTIONS:
-	-s The path to the source directory to backup
-	-b The S3 bucket to backup to
-	-r The remote path within the S3 bucket to backup to
+-s The path to the source directory to backup
+-b The S3 bucket to backup to
+-r The remote path within the S3 bucket to backup to
 EOF
 }
 
-while getopts "s:" OPTION
+while getopts "s:b:r:" OPTION
 do
-	case $OPTION in
-		s)
-			SOURCE_PATH=$OPTARG
-			;;
-		h)
-			usage
-			exit 0
-			;;
-	esac
+  case $OPTION in
+    s)
+      SOURCE_PATH=$OPTARG
+      ;;
+    b)
+      BUCKET=$OPTARG
+      ;;
+    r)
+      REMOTE_PATH=$OPTARG
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+  esac
 done
 
-if [[ -z $SOURCE_PATH ]]
+if [[ -z $SOURCE_PATH ]] || [[ -z $BUCKET ]] || [[ -z $REMOTE_PATH ]]
 then
-	usage
-	exit 1
+  usage
+  exit 1
 fi
 
 TAR_FILE=$(mktemp)
 
 echo "Compressing $SOURCE_PATH"
 tar -czf $TAR_FILE $SOURCE_PATH
+
+echo "Uploading to S3 bucket $BUCKET at path $REMOTE_PATH"
+aws s3 cp $TAR_FILE s3://$BUCKET/$REMOTE_PATH
+
+echo "Done"

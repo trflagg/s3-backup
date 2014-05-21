@@ -1,21 +1,21 @@
 # s3-backup
 
-A [Docker](https://www.docker.io/) container which backups up a local path to S3.
+A pair of [Docker](https://www.docker.io/) containers which backup up a local path to S3 and later restores the backups.
 
-The container is designed to be used with the volumes-from option to backup the contents of a data only container. It adds the file(s) to backup to a tarfile
-and then uploads them to the specified S3 bucket.
+The containers are designed to be used with the volumes-from option to backup the contents of a data only container. It adds the file(s) to backup to a tarfile
+and then uploads them to the specified S3 bucket. Restoring does the same in reverse.
 
 ## Usage
 
+Backing up:
 ```
 docker run --rm --volumes-from my-data-only-container digit/s3-backup -s /path/in/container -b bucket-name -r path/on/bucket
 ```
 
-Where the options are:
-
-- -s The path to the source directory to backup
-- -b The S3 bucket to backup to
-- -r The remote path within the S3 bucket to backup to
+Restoring:
+```
+docker run --rm --volumes-from my-data-only-container digit/s3-restore -b bucket-name -r path/on/bucket
+```
 
 ## Example usage
 
@@ -39,4 +39,10 @@ Let's say you have a bucket foo-backup and you want to backup the contents of /v
 
 ```
 docker run --rm --volumes-from foo-data digit/s3-backup -s /var/volume1 -b foo-backup -r foo-backup/my-backup.tar.gz
+```
+
+Later on if you want to restore a backup it's as simple as:
+
+```
+docker run --rm --volumes-from foo-data digit/s3-restore -b foo-backup -r foo-backup/my-backup.tar.gz
 ```

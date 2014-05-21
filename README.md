@@ -46,3 +46,13 @@ Later on if you want to restore a backup it's as simple as:
 ```
 docker run --rm --volumes-from foo-data digit/s3-restore -b foo-backup -r foo-backup/my-backup.tar.gz
 ```
+
+## Running tests
+
+There is a test.sh which build the container locally and runs a test backup restore cycle. 
+To use it you need to set two environment variables to specify the bucket and the remote path and also have your AWS credentials
+stored at ~/.boto as you would for using boto (see [boto](https://github.com/boto/boto)).
+
+```
+BUCKET_NAME=my-bucket REMOTE_PATH=some/path/foo.tar.gz ./test.sh
+```

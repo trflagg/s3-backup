@@ -1,0 +1,44 @@
+#!/bin/bash
+
+function usage {
+cat << EOF
+usage: $0 -b bucket -r remote_path
+: $0 -h
+
+OPTIONS:
+-b The S3 bucket to backup from
+-r The remote path within the S3 bucket to backup from
+EOF
+}
+
+while getopts "t:b:r:" OPTION
+do
+  case $OPTION in
+    b)
+      BUCKET=$OPTARG
+      ;;
+    r)
+      REMOTE_PATH=$OPTARG
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+  esac
+done
+
+if [[ -z $BUCKET ]] || [[ -z $REMOTE_PATH ]]
+then
+  usage
+  exit 1
+fi
+
+TAR_FILE=$(mktemp)
+
+echo "Fetching from S3 bucket $BUCKER at path $REMOTE_PATH"
+aws s3 cp s3://$BUCKET/$REMOTE_PATH $TAR_FILE 
+
+echo "Decompressing"
+tar -xzf $TAR_FILE
+
+echo "Done"

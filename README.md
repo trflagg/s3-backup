@@ -22,13 +22,13 @@ docker run --rm --volumes-from my-data-only-container digit/s3-restore -b bucket
 Suppose you have a data container created by running something like this:
 
 ```
-docker run -v /var/volume1 -name foo-data busybox true
+docker run -v /var/volume1 --name foo-data busybox true
 ```
 
 Then normally you would start the container which runs your program/service and make it use the data containers volume:
 
 ```
-docker run -d --volumes-from foo-data -name foo my-registry/foo
+docker run -d --volumes-from foo-data --name foo myregistry/foo
 ```
 
 You do this because then you can kill the foo container and have the data in /var/volume1 persisted in the data only foo-data container.

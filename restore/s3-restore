@@ -35,7 +35,7 @@ fi
 
 TAR_FILE=$(mktemp)
 
-echo "Fetching from S3 bucket $BUCKER at path $REMOTE_PATH"
+echo "Fetching from S3 bucket $BUCKET at path $REMOTE_PATH"
 aws s3 cp s3://$BUCKET/$REMOTE_PATH $TAR_FILE 
 
 echo "Decompressing"
